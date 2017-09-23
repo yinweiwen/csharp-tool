@@ -7,6 +7,9 @@ using Heijden.DNS;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Management;
+using System.Timers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AutoDNS
 {
@@ -18,22 +21,36 @@ namespace AutoDNS
         public const int DefaultPort = 53;
         public static readonly IPEndPoint[] DefaultDnsServers =
         {
-            new IPEndPoint(IPAddress.Parse("223.5.5.5"), 53),
-            new IPEndPoint(IPAddress.Parse("114.114.114.114"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
-            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53),
+            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53), //google
+            new IPEndPoint(IPAddress.Parse("114.114.114.114"), 53), //114
+            new IPEndPoint(IPAddress.Parse("223.5.5.5"), 53),   // ali
             new IPEndPoint(IPAddress.Parse("8.8.4.4"), 53),
             new IPEndPoint(IPAddress.Parse("223.6.6.6"), 53),
-            new IPEndPoint(IPAddress.Parse("114.114.115.115"), 53)
+            new IPEndPoint(IPAddress.Parse("114.114.115.115"), 53),
+            new IPEndPoint(IPAddress.Parse("180.76.76.76"), 53),    // baidu
+            new IPEndPoint(IPAddress.Parse("101.226.4.6"), 53),
+            new IPEndPoint(IPAddress.Parse("112.124.47.27"), 53)
         };
+
+        private static double AverageResolveCost(Resolver res)
+        {
+            List<long> elps = new List<long>();
+            foreach (Website site in WebSites)
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                var ss = res.Query(site.Url, QType.A);
+                if (ss.Answers.Any())
+                    elps.Add(sw.ElapsedMilliseconds);
+            }
+            return elps.Any() ? elps.Average() : 0;
+        }
+
+        private static bool CheckDns(Resolver res)
+        {
+            var elps = AverageResolveCost(res);
+            return 0 < elps && elps < 1000;
+        }
 
         public static readonly Website[] WebSites =
         {
@@ -47,8 +64,72 @@ namespace AutoDNS
 
         static void Main(string[] args)
         {
-            SetIpInfo(null, null, null, new[] { "223.5.5.89" });
-            GetDnsInfo();
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine(">> START DNS VALID...");
+                    var validDns = new List<IPEndPoint>();
+                    long validDnsCnt = 0;
+                    long validThreadCnt = 0;
+                    var synobj = new object();
+                    if (!CheckDns(new Resolver()))
+                    {
+                        Console.WriteLine("DNS invalid, begin searching...");
+                        foreach (var dns in DefaultDnsServers)
+                        {
+                            new Task(() => {
+                                Console.WriteLine("search {0}...", dns.Address.ToString());
+                                Interlocked.Increment(ref validThreadCnt);
+                                try
+                                {
+                                    if (CheckDns(new Resolver(new[] { dns })))
+                                    {
+                                        lock (synobj)
+                                        {
+                                            validDns.Add(dns);
+                                            Interlocked.Increment(ref validDnsCnt);
+                                        }
+                                    }
+                                }
+                                catch (Exception)  // check err
+                                {
+                                    // do nothing
+                                }
+                                Interlocked.Decrement(ref validThreadCnt);
+                            }).Start();
+                        }
+                        Thread.Sleep(500);
+                        while (Interlocked.Read(ref validDnsCnt) < 2 && Interlocked.Read(ref validThreadCnt) > 0)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        lock (synobj)
+                        {
+                            var dnses = validDns.Take(2).Select(d => d.Address.ToString()).ToArray();
+                            if (dnses.Any())
+                            {
+                                SetIpInfo(null, null, null, dnses);
+                                Console.WriteLine("change dns to {0} successful", string.Join(",", dnses));
+                            }
+                        }
+                    }   // not valid
+                    GetDnsInfo();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+#if DEBUG
+                Thread.Sleep(10 * 1000);
+#else
+                Thread.Sleep(5 * 60 * 1000);
+#endif
+            }
+        }
+
+        public static void TestDns()
+        {
             Resolver _resolver = new Resolver(DefaultDnsServers);
 
             foreach (Website site in WebSites)
@@ -161,19 +242,27 @@ namespace AutoDNS
                 if (!(bool)mo["IPEnabled"]) continue;
                 var MACAddress = mo["MacAddress"].ToString();
                 Console.WriteLine(MACAddress);
-                inPar = mo.GetMethodParameters("EnableStatic");
-                Console.WriteLine(s);
-                inPar["IPAddress"] = ip;//ip地址  
-                inPar["SubnetMask"] = SubMark; //子网掩码   
-                mo.InvokeMethod("EnableStatic", inPar, null);//执行  
+                if (ip != null && SubMark != null)
+                {
+                    inPar = mo.GetMethodParameters("EnableStatic");
+                    inPar["IPAddress"] = ip;//ip地址
+                    inPar["SubnetMask"] = SubMark; //子网掩码   
+                    mo.InvokeMethod("EnableStatic", inPar, null);//执行  
+                }
 
-                inPar = mo.GetMethodParameters("SetGateways");
-                inPar["DefaultIPGateway"] = GateWay; //设置网关地址 1.网关;2.备用网关  
-                outPar = mo.InvokeMethod("SetGateways", inPar, null);//执行  
+                if (GateWay != null)
+                {
+                    inPar = mo.GetMethodParameters("SetGateways");
+                    inPar["DefaultIPGateway"] = GateWay; //设置网关地址 1.网关;2.备用网关  
+                    outPar = mo.InvokeMethod("SetGateways", inPar, null);//执行  
+                }
 
-                inPar = mo.GetMethodParameters("SetDNSServerSearchOrder");
-                inPar["DNSServerSearchOrder"] = DNS; //设置DNS  1.DNS 2.备用DNS  
-                mo.InvokeMethod("SetDNSServerSearchOrder", inPar, null);// 执行  
+                if (DNS != null)
+                {
+                    inPar = mo.GetMethodParameters("SetDNSServerSearchOrder");
+                    inPar["DNSServerSearchOrder"] = DNS; //设置DNS  1.DNS 2.备用DNS  
+                    mo.InvokeMethod("SetDNSServerSearchOrder", inPar, null);// 执行  
+                }
                 break; //只设置一张网卡，不能多张。  
             }
         }
