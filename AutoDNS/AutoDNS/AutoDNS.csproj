@@ -125,7 +125,6 @@
     <Content Include="Dns\Root\named_root.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>
