@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiCableForce", "AiCableForce\AiCableForce.csproj", "{30180A70-EA3F-4B6E-98D5-782A4A464ADA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiCableForceTest", "AiCableForceTest\AiCableForceTest.csproj", "{6CDA4B32-333C-43EA-9A54-7B0432E2DFDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZedGraph", "ZedGraph\ZedGraph.csproj", "{2541686B-1673-43BF-AF89-3163945DB009}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiLaboratory", "AiLaboratory\AiLaboratory.csproj", "{58A8C992-4140-4162-BFB6-436D99CE4BF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileBrowser", "FileBrowser\FileBrowser.csproj", "{FC8064DF-B0BC-4D03-B1AE-077F3387412C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecondaryNoise", "SecondaryNoise\SecondaryNoise.csproj", "{8A23AC91-FFA5-4DEB-9BA8-D298E349D2AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30180A70-EA3F-4B6E-98D5-782A4A464ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30180A70-EA3F-4B6E-98D5-782A4A464ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30180A70-EA3F-4B6E-98D5-782A4A464ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30180A70-EA3F-4B6E-98D5-782A4A464ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CDA4B32-333C-43EA-9A54-7B0432E2DFDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CDA4B32-333C-43EA-9A54-7B0432E2DFDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CDA4B32-333C-43EA-9A54-7B0432E2DFDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CDA4B32-333C-43EA-9A54-7B0432E2DFDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2541686B-1673-43BF-AF89-3163945DB009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2541686B-1673-43BF-AF89-3163945DB009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2541686B-1673-43BF-AF89-3163945DB009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2541686B-1673-43BF-AF89-3163945DB009}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58A8C992-4140-4162-BFB6-436D99CE4BF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A8C992-4140-4162-BFB6-436D99CE4BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A8C992-4140-4162-BFB6-436D99CE4BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A8C992-4140-4162-BFB6-436D99CE4BF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC8064DF-B0BC-4D03-B1AE-077F3387412C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC8064DF-B0BC-4D03-B1AE-077F3387412C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC8064DF-B0BC-4D03-B1AE-077F3387412C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC8064DF-B0BC-4D03-B1AE-077F3387412C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A23AC91-FFA5-4DEB-9BA8-D298E349D2AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A23AC91-FFA5-4DEB-9BA8-D298E349D2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A23AC91-FFA5-4DEB-9BA8-D298E349D2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A23AC91-FFA5-4DEB-9BA8-D298E349D2AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
