@@ -34,24 +34,24 @@ namespace AiCableForce.noise
              */
             _bands = new List<OctaveBand>()
             {
-                new OctaveBand(4,3.55,4.47),
-                new OctaveBand(5,4.47,5.62),
-                new OctaveBand(6.3,5.62,7.08),
-                new OctaveBand(8,7.08,8.91),
-                new OctaveBand(10,8.91,11.2),
-                new OctaveBand(12.5,11.2,14.1,-1),
-                new OctaveBand(16,14.1,17.8,-2),
-                new OctaveBand(20,17.8,22.4,-4),
-                new OctaveBand(25,22.4,28.2,-6),
-                new OctaveBand(31.5,28.2,35.5,-8),
-                new OctaveBand(40,35.5,44.7,-10),
-                new OctaveBand(50,44.7,56.2,-12),
-                new OctaveBand(63,56.2,70.8,-14),
-                new OctaveBand(80,70.8,89.1,-17),
-                new OctaveBand(100,89.1,112,-21),
-                new OctaveBand(125,112,141,-25),
-                new OctaveBand(160,141,178,-30),
-                new OctaveBand(200,178,224,-36)
+                new OctaveBand(4,3.55,4.47,0,967),
+                new OctaveBand(5,4.47,5.62,0,1039),
+                new OctaveBand(6.3,5.62,7.08,0,1054),
+                new OctaveBand(8,7.08,8.91,0,1036),
+                new OctaveBand(10,8.91,11.2,0,988),
+                new OctaveBand(12.5,11.2,14.1,-1,902),
+                new OctaveBand(16,14.1,17.8,-2,768),
+                new OctaveBand(20,17.8,22.4,-4,636),
+                new OctaveBand(25,22.4,28.2,-6,513),
+                new OctaveBand(31.5,28.2,35.5,-8,405),
+                new OctaveBand(40,35.5,44.7,-10,314),
+                new OctaveBand(50,44.7,56.2,-12,246),
+                new OctaveBand(63,56.2,70.8,-14,186),
+                new OctaveBand(80,70.8,89.1,-17,132),
+                new OctaveBand(100,89.1,112,-21,88.7),
+                new OctaveBand(125,112,141,-25,54.0),
+                new OctaveBand(160,141,178,-30,28.5),
+                new OctaveBand(200,178,224,-36,15.2)
             };
         }
 
@@ -70,7 +70,7 @@ namespace AiCableForce.noise
                 foreach (var octaveBand in _bands)
                 {
                     octaveBand.CalcRms(y, f[1]);
-                    sum += octaveBand.Rms * octaveBand.Rms * octaveBand.ZWeigth * octaveBand.ZWeigth;
+                    sum += octaveBand.Rms * octaveBand.Rms * octaveBand.ZWeight2 * octaveBand.ZWeight2;
                 }
                 var aw = Math.Sqrt(sum);
                 lvzs[k] = 20 * Math.Log10(aw / a0);
@@ -88,7 +88,7 @@ namespace AiCableForce.noise
         // Z计权因子
         private double _zw;
 
-        public double ZWeigth
+        public double ZWeight
         {
             get { return _zw; }
             private set
@@ -97,14 +97,24 @@ namespace AiCableForce.noise
             }
         }
 
+        // Z计权因子（标准文档）
+        private double _zw2;
+
+        public double ZWeight2
+        {
+            get { return _zw2; }
+            private set { _zw2 = value / 1000; }
+        }
+
         public double Rms;
 
-        public OctaveBand(double c, double l, double u, double z = 0)
+        public OctaveBand(double c, double l, double u, double z, double z2)
         {
             _center = c;
             _low = l;
             _up = u;
-            ZWeigth = z;
+            ZWeight = z;
+            ZWeight2 = z2;
         }
 
         // awi

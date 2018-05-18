@@ -56,9 +56,8 @@
             this.lbRes.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbRes.Location = new System.Drawing.Point(256, 103);
             this.lbRes.Name = "lbRes";
-            this.lbRes.Size = new System.Drawing.Size(94, 24);
+            this.lbRes.Size = new System.Drawing.Size(0, 24);
             this.lbRes.TabIndex = 1;
-            this.lbRes.Text = "32.12dB";
             // 
             // label1
             // 
