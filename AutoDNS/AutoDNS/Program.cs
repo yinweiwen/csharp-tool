@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using Heijden.DNS;
 using System.Diagnostics;
-using System.Net.NetworkInformation;
+using System.Linq;
 using System.Management;
-using System.Timers;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Heijden.DNS;
 
 namespace AutoDNS
 {
@@ -206,7 +205,7 @@ namespace AutoDNS
                     IPInterfaceProperties ip = adapter.GetIPProperties();     //IP配置信息  
                     if (ip.UnicastAddresses.Count > 0)
                     {
-                        var ipv4 = ip.UnicastAddresses.FirstOrDefault(a => a.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+                        var ipv4 = ip.UnicastAddresses.FirstOrDefault(a => a.Address.AddressFamily == AddressFamily.InterNetwork);
                         Console.WriteLine("IP地址 :{0}", ipv4.Address.ToString());
                         Console.WriteLine("子网掩码 :{0}", ipv4.IPv4Mask.ToString());
 
