@@ -1,0 +1,1 @@
+curl -XPOST http://iota-m2:9200/savoir_themes/theme/_search?pretty -d'{"query":{"bool":{"filter":{"range":{"collect_time":{"lt":"now"}}}}},"sort": [{"collect_time": {"order": "desc"}}],"size":1}'

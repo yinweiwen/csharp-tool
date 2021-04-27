@@ -1,0 +1,5 @@
+18/07/13 22:00:42 INFO client.RMProxy: Connecting to ResourceManager at iota-m2/10.8.25.202:8050
+18/07/13 22:00:42 INFO client.AHSProxy: Connecting to Application History server at iota-m2/10.8.25.202:10200
+Total number of applications (application-types: [] and states: [SUBMITTED, ACCEPTED, RUNNING]):1
+                Application-Id	    Application-Name	    Application-Type	      User	     Queue	             State	       Final-State	       Progress	                       Tracking-URL
+application_1523959063369_0032	       anxin.et.main	               SPARK	      hdfs	   default	           RUNNING	         UNDEFINED	            10%	           http://10.8.25.211:45951

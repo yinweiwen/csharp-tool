@@ -1,0 +1,40 @@
+{
+  "took" : 1759,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 20712766,
+    "max_score" : null,
+    "hits" : [
+      {
+        "_index" : "savoir_themes",
+        "_type" : "theme",
+        "_id" : "AWZX81zL522t10Tt-X3w",
+        "_score" : null,
+        "_source" : {
+          "sensor_name" : "裂缝测点5",
+          "factor_name" : "裂缝",
+          "factor_proto_code" : "4008",
+          "data" : {
+            "crack" : 0.291
+          },
+          "factor_proto_name" : "裂缝",
+          "factor" : 128,
+          "collect_time" : "2018-10-09T08:22:59.000Z",
+          "sensor" : 7487,
+          "structure" : 433,
+          "iota_device" : [
+            "011cbe8d-5634-4f81-9869-56385082cd23"
+          ]
+        },
+        "sort" : [
+          1539073379000
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "etwatcher",
+  "version": "1.0.0",
+  "description": "ET Watch Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "set DEBUG=true&&\"node_modules/.bin/mocha\" --harmony --recursive --reporter mochawesome",
+    "start": "set NODE_ENV=development&&node index"
+  },
+  "keywords": [
+    "etwatcher"
+  ],
+  "author": "yww",
+  "license": "ISC",
+  "dependencies": {
+    "cron": "^1.2.1",
+    "moment": "^2.18.1",
+    "nodemailer": "^4.0.1",
+    "superagent": "^3.5.2"
+  }
+}
