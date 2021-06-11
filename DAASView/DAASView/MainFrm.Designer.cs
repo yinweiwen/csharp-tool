@@ -33,10 +33,11 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.folderBrowserDialog2 = new System.Windows.Forms.FolderBrowserDialog();
-            this.exportDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportFFTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.SuspendLayout();
@@ -57,7 +58,8 @@
             this.openToolStripMenuItem,
             this.toolStripSeparator1,
             this.exportTxtToolStripMenuItem,
-            this.exportDirToolStripMenuItem});
+            this.exportDirToolStripMenuItem,
+            this.exportFFTToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
             this.fileToolStripMenuItem.Text = "&File";
@@ -81,6 +83,13 @@
             this.exportTxtToolStripMenuItem.Text = "Export Txt";
             this.exportTxtToolStripMenuItem.Click += new System.EventHandler(this.exportTxtToolStripMenuItem_Click);
             // 
+            // exportDirToolStripMenuItem
+            // 
+            this.exportDirToolStripMenuItem.Name = "exportDirToolStripMenuItem";
+            this.exportDirToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportDirToolStripMenuItem.Text = "Export Dir";
+            this.exportDirToolStripMenuItem.Click += new System.EventHandler(this.exportDirToolStripMenuItem_Click_1);
+            // 
             // dgv
             // 
             this.dgv.AllowUserToAddRows = false;
@@ -99,12 +108,12 @@
             // 
             this.folderBrowserDialog1.SelectedPath = ";";
             // 
-            // exportDirToolStripMenuItem
+            // exportFFTToolStripMenuItem
             // 
-            this.exportDirToolStripMenuItem.Name = "exportDirToolStripMenuItem";
-            this.exportDirToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportDirToolStripMenuItem.Text = "Export Dir";
-            this.exportDirToolStripMenuItem.Click += new System.EventHandler(this.exportDirToolStripMenuItem_Click_1);
+            this.exportFFTToolStripMenuItem.Name = "exportFFTToolStripMenuItem";
+            this.exportFFTToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportFFTToolStripMenuItem.Text = "Export FFT";
+            this.exportFFTToolStripMenuItem.Click += new System.EventHandler(this.exportFFTToolStripMenuItem_Click);
             // 
             // MainFrm
             // 
@@ -136,6 +145,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportTxtToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2;
         private System.Windows.Forms.ToolStripMenuItem exportDirToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportFFTToolStripMenuItem;
     }
 }
 

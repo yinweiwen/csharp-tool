@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace DAASView
@@ -54,6 +55,7 @@ namespace DAASView
                 tb.Columns.Add("file");
                 tb.Columns.Add("module");
                 tb.Columns.Add("ch");
+                tb.Columns.Add("fs");
                 tb.Columns.Add("count", typeof(long)); // 点数
                 tb.Columns.Add("max", typeof(double));
                 tb.Columns.Add("pp", typeof(double));
@@ -75,6 +77,7 @@ namespace DAASView
             tb.Columns.Add("file");
             tb.Columns.Add("module");
             tb.Columns.Add("ch");
+            tb.Columns.Add("fs");
             tb.Columns.Add("count", typeof(long)); // 点数
             tb.Columns.Add("max", typeof(double));
             tb.Columns.Add("pp", typeof(double));
@@ -88,7 +91,7 @@ namespace DAASView
         }
 
         private delegate bool ReadVib(
-            string file, out CloudVibFileTitle title, out double[] data, out string module, out string err);
+            string file, out CloudVibFileTitle title, out double[] data, out string module, out string err, out double fs);
 
         public static void LoadAndExport(FileInfo fi, string dest)
         {
@@ -96,22 +99,23 @@ namespace DAASView
             double[] org;
             string err;
             string mod;
+            double ff;
             switch (fi.Extension)
             {
                 case ".dat":
-                    if (!ReadCloudVibFile(fi.FullName, out title, out org, out mod, out err))
+                    if (!ReadCloudVibFile(fi.FullName, out title, out org, out mod, out err, out ff))
                     {
                         return;
                     }
                     break;
                 case ".odb":
-                    if (!ReadDAASVibFile(fi.FullName, out title, out org, out mod, out err))
+                    if (!ReadDAASVibFile(fi.FullName, out title, out org, out mod, out err, out ff))
                     {
                         return;
                     }
                     break;
                 case "":
-                    if (!ReadProcessedVibFile(fi.FullName, out title, out org, out mod, out err))
+                    if (!ReadProcessedVibFile(fi.FullName, out title, out org, out mod, out err, out ff))
                     {
                         return;
                     }
@@ -139,7 +143,8 @@ namespace DAASView
                     double[] org;
                     string err;
                     string mod;
-                    if (!rb(fi.FullName, out title, out org, out mod, out err))
+                    double ff;
+                    if (!rb(fi.FullName, out title, out org, out mod, out err, out ff))
                     {
                         continue;
                     }
@@ -157,6 +162,7 @@ namespace DAASView
                     nr["pp"] = pp;
                     nr["time"] = time;
                     nr["data"] = org;
+                    nr["fs"] = ff;
                     tb.Rows.Add(nr);
                 }
                 catch (Exception)
@@ -176,7 +182,7 @@ namespace DAASView
         /// <param name="err">out 错误信息</param>
         /// <param name="module">out 转换后的模块号</param>
         /// <returns></returns>
-        private static bool ReadCloudVibFile(string file, out CloudVibFileTitle title, out double[] data, out string module, out string err)
+        private static bool ReadCloudVibFile(string file, out CloudVibFileTitle title, out double[] data, out string module, out string err, out double ff)
         {
             try
             {
@@ -196,6 +202,7 @@ namespace DAASView
                     fs.Close();
                 }
                 module = title.DeviceID.ToString();
+                ff = title.SampleFreq;
                 return true;
             }
             catch (Exception ex)
@@ -204,11 +211,12 @@ namespace DAASView
                 data = null;
                 err = ex.Message;
                 module = "";
+                ff = 0;
                 return false;
             }
         }
 
-        private static bool ReadDAASVibFile(string file, out CloudVibFileTitle title, out double[] data, out string module, out string err)
+        private static bool ReadDAASVibFile(string file, out CloudVibFileTitle title, out double[] data, out string module, out string err, out double ff)
         {
 
             try
@@ -233,6 +241,7 @@ namespace DAASView
                     min = (byte)time.Minute,
                     sec = (byte)time.Second
                 };
+                ff = title.SampleFreq;
                 return true;
             }
             catch (Exception ex)
@@ -241,11 +250,12 @@ namespace DAASView
                 data = null;
                 err = ex.Message;
                 module = "";
+                ff = 0;
                 return false;
             }
         }
 
-        private static bool ReadProcessedVibFile(string file, out CloudVibFileTitle title, out double[] data, out string module, out string err)
+        private static bool ReadProcessedVibFile(string file, out CloudVibFileTitle title, out double[] data, out string module, out string err, out double ff)
         {
             title = new CloudVibFileTitle();
             module = "";
@@ -264,12 +274,14 @@ namespace DAASView
                         }
                     }
                 }
+                ff = 0;
                 return true;
             }
             catch (Exception ex)
             {
                 data = null;
                 err = ex.Message;
+                ff = 0;
                 return false;
             }
         }
@@ -388,6 +400,35 @@ namespace DAASView
             }
         }
 
+        private static void ExportFft(string path, DataTable tb)
+        {
+            foreach (DataRow nr in tb.Rows)
+            {
+                try
+                {
+                    var name = nr["file"];
+                    var org = nr["data"] as double[];
+                    var ff = Convert.ToDouble(nr["fs"].ToString());
+                    double[] f, y;
+                    FourierTransformer.Fft(org, ff, out y, out f);
+                    var len = f.Length;
+                    var sb = new StringBuilder();
+                    for (var i = 0; i < len; i++)
+                    {
+                        sb.AppendFormat("{0},{1}\r\n", f[i], y[i]);
+                    }
+                    using (var sw = new StreamWriter(Path.Combine(path, name + ".csv")))
+                    {
+                        sw.Write(sb.ToString());
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+        }
+
         private void exportTxtToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog2.ShowDialog(this) == DialogResult.OK)
@@ -402,6 +443,17 @@ namespace DAASView
         private void exportDirToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             new VibExporter().ShowDialog(this);
+        }
+
+        private void exportFFTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog2.ShowDialog(this) == DialogResult.OK)
+            {
+                var path = folderBrowserDialog2.SelectedPath;
+                var tb = dgv.DataSource as DataTable;
+                ExportFft(path, tb);
+            }
+            MessageBox.Show(@"导出完成!");
         }
     }
 
