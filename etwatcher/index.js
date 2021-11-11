@@ -59,6 +59,16 @@ function check(job,stdout){
     if(job.check){
         return job.check.test(stdout);
     }
+    if(job.n_less || job.n_more){ // 数字检查
+        let f=parseFloat(stdout)
+        if(!f) {
+            console.log(`not a number ${stdout}`)
+            return true;
+        }
+        let low=job.n_less?Number(job.n_less):Number.MAX_VALUE
+        let up=job.n_more?Number(job.n_more):Number.MIN_VALUE
+        return f<low && f>up
+    }
     if(job.t_check){
         if(!job.t_check.test(stdout)){
             console.log('not match t_check, is check format allright?')
@@ -69,10 +79,11 @@ function check(job,stdout){
 
         stdout.replace(job.t_check,function(){
             console.log(arguments[1]);
-            var duration=moment.duration(moment().diff(moment(arguments[1])))
-            var minutes=duration.asMinutes()
-            console.log(minutes)
-            flag= minutes<=job.t_less
+            var time=moment.utc(arguments[1],job.t_format==undefined?null:job.t_format);
+            var duration=moment.duration(moment().diff(time));
+            var minutes=duration.asMinutes();
+            console.log(minutes);
+            flag= minutes<=job.t_less;
         })
         setTimeout(() => {
             
